@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from './navbar';
 import Footer from './footer';
+import '../styles/index.module.css';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (

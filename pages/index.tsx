@@ -42,7 +42,7 @@ const Home: NextPage = () => {
   return (
     <Row className='align-items-center justify-content-center p-3'>
       <Row className='align-items-center justify-content-center w-100 py-4 px-2 light mb-4 rounded'>
-        <Col className='h-100 text-center justify-content-center align-items-center d-flex flex-column'>
+        <Col className='h-100 text-center justify-content-center align-items-center p-2 d-flex flex-column'>
           <FormControl
             as='textarea'
             rows={6}
@@ -52,7 +52,7 @@ const Home: NextPage = () => {
             onChange={(e): void => parsePayloadAndOuputResult('firstPayload', e.target.value)}
           />
         </Col>
-        <Col className='h-100 text-center justify-content-center align-items-center d-flex flex-column'>
+        <Col className='h-100 text-center justify-content-center align-items-center p-2 d-flex flex-column'>
           <FormControl
             as='textarea'
             rows={6}
@@ -66,16 +66,16 @@ const Home: NextPage = () => {
 
       {payloads.firstPayload ? (
         <Row className='align-items-center justify-content-center w-100 mb-4 rounded'>
-          <Col className='h-100 light justify-content-center align-items-center p-4 d-flex flex-column rounded'>
-            <Output title='First Payload Data' payload={JSON.stringify(payloads.firstPayload)} />
+          <Col className='h-100 light p-4 d-flex flex-column rounded'>
+            <Output title='First Payload Data' payload={JSON.stringify(payloads.firstPayload, undefined, 4)} />
           </Col>
         </Row>
       ) : null}
 
       {payloads.secondPayload ? (
         <Row className='align-items-center justify-content-center w-100 mb-4 rounded'>
-          <Col className='h-100 light justify-content-center align-items-center p-4 d-flex flex-column rounded'>
-            <Output title='Second Payload Data' payload={JSON.stringify(payloads.secondPayload)} />
+          <Col className='h-100 light p-4 d-flex flex-column rounded'>
+            <Output title='Second Payload Data' payload={JSON.stringify(payloads.secondPayload, undefined, 4)} />
           </Col>
         </Row>
       ) : null}
