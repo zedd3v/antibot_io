@@ -1,0 +1,28 @@
+import React from 'react';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import FormControl from 'react-bootstrap/FormControl';
+
+const Output = ({ title, payload }: { title: string; payload: string }): JSX.Element => {
+  return (
+    <div>
+      <h2 className='mb-5 ml-3'>{title}</h2>
+      <Row className='align-items-center justify-content-center w-100 m-0'>
+        <Col className='col-12'>
+          <label className='mt-1' htmlFor={title}>
+            {title}
+          </label>
+          <FormControl
+            size='sm'
+            id={title}
+            className='w-100 mb-4 light-input text-center border border-success'
+            value={payload}
+            disabled
+          />
+        </Col>
+      </Row>
+    </div>
+  );
+};
+
+export default Output;
