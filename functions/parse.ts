@@ -44,7 +44,7 @@ const parse = (t: string): PXPayload => {
 };
 
 const removeStatics = (payload: PXPayload) => {
-  const cleaned = payload.slice();
+  const cleaned: PXPayload = JSON.parse(JSON.stringify(payload));
 
   cleaned.forEach((step) => {
     switch (step.t) {
