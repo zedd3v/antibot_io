@@ -474,9 +474,9 @@ export function ParsePayload(payload: string): PXPayload | null {
   try {
     const parsedPayload: PXPayload = parse(payload);
 
-    console.log(parsedPayload);
+    console.log(JSON.stringify(parsedPayload));
 
-    console.log(removeStatics(parsedPayload));
+    console.log(JSON.stringify(removeStatics(parsedPayload)));
 
     return Object.keys(parsedPayload).length === 0 ? null : parsedPayload;
   } catch (e) {
