@@ -1,44 +1,81 @@
-const se = (e: any, r: any) => {
+const simpleEncode = (e: any, r: any) => {
   let l = '';
   for (let t = 0; t < e.length; t++) l += String.fromCharCode(e.charCodeAt(t) ^ r);
   return l;
 };
 
-const xx = (t: any, e: any, r: any) => {
-  for (var l = se(btoa(r), 10), o = [], n = -1, a = 0; a < t.length; a++) {
-    var h = Math.floor(a / l.length + 1),
-      s = a >= l.length ? a % l.length : a,
-      h = l.charCodeAt(s) * l.charCodeAt(h);
-    n < h && (n = h);
+const xx = (encodedSTS: any, len: any, uuid: any) => {
+  var encodedUUID = simpleEncode(btoa(uuid), 10);
+  var o = [];
+  var n = -1;
+
+  for (let a = 0; a < encodedSTS.length; a++) {
+    const c = Math.floor(a / encodedUUID.length + 1);
+
+    let s = a;
+    if (a >= encodedUUID.length) {
+      s = a % encodedUUID.length;
+    }
+
+    var h = encodedUUID.charCodeAt(s) * encodedUUID.charCodeAt(c);
+
+    if (h > n) {
+      n = h;
+    }
   }
-  for (var i = 0; t.length > i; i++) {
-    var c = Math.floor(i / l.length) + 1,
-      f = i % l.length,
-      g = l.charCodeAt(f) * l.charCodeAt(c);
-    for (e <= g && (g = Math.floor((+g / +n) * (e - 1) + 0)); -1 !== o.indexOf(g); ) g += 1;
+
+  for (var i = 0; encodedSTS.length > i; i++) {
+    var c = Math.floor(i / encodedUUID.length) + 1;
+    var f = i % encodedUUID.length;
+    var g = encodedUUID.charCodeAt(f) * encodedUUID.charCodeAt(c);
+
+    for (len <= g && (g = Math.floor((+g / +n) * (len - 1) + 0)); -1 !== o.indexOf(g); ) {
+      g += 1;
+    }
+
     o.push(g);
   }
+
   return o.sort(function (t, e) {
     return t - e;
   });
 };
 
-const us = (e: any, t: any, r: any) => {
-  var l = se(btoa(t), 10),
-    o = xx(l, e.length - 20, r);
+const shuffle = (payload: any, sts: any, uuid: any) => {
+  const encodedSTS = simpleEncode(btoa(sts), 10);
+  const o = xx(encodedSTS, payload.length - 20, uuid);
+
+  // console.log('shufflingslice', o);
+
   let n: any[] = [],
     a = 0;
-  for (let t = 0; t < l.length; t++) {
+  for (let t = 0; t < encodedSTS.length; t++) {
     var h = o[t] - t - a;
-    n.splice(a, 0, ...e.slice(0, h)), (e = e.slice(h)), (a = o[t] - t - 1);
+    n.splice(a, 0, ...payload.slice(0, h));
+    payload = payload.slice(h);
+    a = o[t] - t - 1;
   }
-  return n.join('').slice(0, -l.length) + e;
+
+  return n.join('').slice(0, -encodedSTS.length) + payload;
 };
 
 const parse = (t: string): PXPayload => {
-  const parsed = JSON.parse(
-    se(atob(us(t.split('payload=')[1].split('&')[0], '1604064986000', t.split('uuid=')[1].split('&')[0])), 50)
-  );
+  const pxPayload = t.split('payload=')[1].split('&')[0];
+  const sts = '1604064986000'; // parse maybe
+  const uuid = t.split('uuid=')[1].split('&')[0];
+
+  // console.log('\npxPayload', pxPayload);
+  // console.log('uuid', uuid);
+
+  const unshuffled = shuffle(pxPayload, sts, uuid);
+
+  // console.log('unshuffled', unshuffled);  
+
+  const decoded = simpleEncode(atob(unshuffled), 50)
+
+  console.log(decoded)
+
+  const parsed = JSON.parse(decoded);
 
   return parsed;
 };
@@ -473,10 +510,6 @@ export type PXPayload = Array<{
 export function ParsePayload(payload: string): PXPayload | null {
   try {
     const parsedPayload: PXPayload = parse(payload);
-
-    console.log(JSON.stringify(parsedPayload));
-
-    console.log(JSON.stringify(removeStatics(parsedPayload)));
 
     return Object.keys(parsedPayload).length === 0 ? null : parsedPayload;
   } catch (e) {
